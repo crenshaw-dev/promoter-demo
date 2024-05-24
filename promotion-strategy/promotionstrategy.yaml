@@ -1,0 +1,15 @@
+apiVersion: promoter.argoproj.io/v1alpha1
+kind: PromotionStrategy
+metadata:
+  name: scmprovider-sample
+spec:
+  dryBranch: master
+  environments:
+    - branch: environments/dev
+    - branch: environments/test
+    - branch: environments/prod
+  repository:
+    name: argocd-example-apps
+    owner: crenshaw-dev
+    scmProviderRef:
+      name: scmprovider-example
