@@ -31,7 +31,34 @@ make start-local ARGOCD_START="api-server ui applicationset-controller controlle
 
 Follow the instructions here: https://github.com/zachaller/promoter/tree/main/docs
 
-## 3. Install an ApplicationSet that uses the source hydrator
+## 3. Set up Credentials
+
+As part of the promoter installation, you should have created a secret with the private key, installation ID, and 
+app ID. We need those same credentials for the source hydrator.
+
+```shell
+kubectl get secret -n default my-auth -ojson | jq '.data | {
+  "apiVersion": "v1", 
+  "kind": "Secret", 
+  "type": "Opaque", 
+  "metadata": {
+    "name": "my-auth", 
+    "namespace": "argocd", 
+    "labels": {
+      "argocd.argoproj.io/secret-type": "hydrator"
+    }
+  }, 
+  "data": {
+    "githubAppID": .appID, 
+    "githubAppInstallationID": .installationID, 
+    "githubAppPrivateKey": .privateKey, 
+    "type": ("git" | @base64), 
+    "url": ("https://github.com/crenshaw-dev" | @base64)
+  }
+}' | kubectl apply -n argocd -f -
+```
+
+## 4. Install an ApplicationSet that uses the source hydrator
 
 Apply this manifest. It will create three applications, one for each environment and region. The application names 
 correspond to the .argocd-source-<app name>.yaml files in the helm-guestbook directory. The branches correspond to those
