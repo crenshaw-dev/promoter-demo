@@ -1,0 +1,7 @@
+helm:
+  namespace: default
+  releaseName: dev
+  valueFiles:
+  - values.yaml
+  - values-dev.yaml
+

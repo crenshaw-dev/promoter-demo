@@ -1,0 +1,7 @@
+helm:
+  namespace: default
+  releaseName: prod
+  valueFiles:
+  - values.yaml
+  - values-prod.yaml
+
