@@ -1,9 +1,11 @@
 apiVersion: promoter.argoproj.io/v1alpha1
 kind: PromotionStrategy
 metadata:
-  name: scmprovider-sample
+  name: scmprovider-example
 spec:
   dryBranch: master
+  activeCommitStatuses:
+    - key: app-health
   environments:
     - branch: environments/dev
     - branch: environments/test
