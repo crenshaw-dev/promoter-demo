@@ -5,7 +5,7 @@ metadata:
 spec:
   dryBranch: master
   activeCommitStatuses:
-    - key: app-health
+    - key: app-healthy
   environments:
     - branch: environments/dev
     - branch: environments/test
