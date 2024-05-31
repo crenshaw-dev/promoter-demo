@@ -8,6 +8,7 @@ spec:
     - key: app-healthy
   environments:
     - branch: environments/dev
+      autoMerge: true
     - branch: environments/test
     - branch: environments/prod
   repository:
