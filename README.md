@@ -11,8 +11,8 @@ kubectl create namespace argocd
 kubectl config set-context --current --namespace=argocd
 kubectl apply -f manifests/install.yaml
 # Scale down the application-controller and applicationset-controller. We'll run those locally.
-kubectl scale sts application-controller --replicas=0
-kubectl scale deployment applicationset-controller --replicas=0
+kubectl scale sts argocd-application-controller --replicas=0
+kubectl scale deployment argocd-applicationset-controller --replicas=0
 ```
 
 In a separate terminal, port-forward Redis.
@@ -37,7 +37,7 @@ As part of the promoter installation, you should have created a secret with the 
 app ID. We need those same credentials for the source hydrator.
 
 ```shell
-kubectl get secret -n default my-auth -ojson | jq '.data | {
+kubectl get secret my-auth -ojson | jq '.data | {
   "apiVersion": "v1", 
   "kind": "Secret", 
   "type": "Opaque", 
@@ -83,7 +83,6 @@ spec:
         - list:
             elements:
             - region: east
-            - region: west
   template:
     metadata:
       name: '{{.name}}-{{.region}}'
@@ -91,7 +90,7 @@ spec:
       sourceHydrator:
         drySource:
           path: helm-guestbook
-          repoURL: https://github.com/crenshaw-dev/promoter-demo
+          repoURL: https://github.com/crenshaw-dev/argocd-example-apps
           targetRevision: HEAD
         hydrateTo:
           targetRevision: environments/{{.name}}-next
@@ -106,7 +105,30 @@ spec:
         automated: {}
 ```
 
-## 5. Push a change to the dry sources
+## 5. Create an app to deploy additional config
+
+Apply this to the `argocd` namespace.
+
+```yaml
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: additional-config
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/crenshaw-dev/promoter-demo
+    targetRevision: HEAD
+    path: promotion-strategy
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated: {}
+```
+
+## 6. Push a change to the dry sources
 
 Make a change to this repo in the helm-guestbook directory. Ideally, make it to a file that affects all three
 environments and regions. Push the change to main. You should see three PRs automatically created in the repo
