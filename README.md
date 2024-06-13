@@ -93,9 +93,9 @@ spec:
           repoURL: https://github.com/crenshaw-dev/argocd-example-apps
           targetRevision: HEAD
         hydrateTo:
-          targetRevision: environments/{{.name}}-next
+          targetBranch: environments/{{.name}}-next
         syncSource:
-          targetRevision: environments/{{.name}}
+          targetBranch: environments/{{.name}}
           path: "{{.name}}-{{.region}}"
       destination:
         namespace: default
