@@ -45,7 +45,7 @@ kubectl get secret my-auth -ojson | jq '.data | {
     "name": "my-auth", 
     "namespace": "argocd", 
     "labels": {
-      "argocd.argoproj.io/secret-type": "write-repository"
+      "argocd.argoproj.io/secret-type": "repository-write"
     }
   }, 
   "data": {
