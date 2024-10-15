@@ -45,7 +45,7 @@ kubectl get secret my-auth -ojson | jq '.data | {
     "name": "my-auth", 
     "namespace": "argocd", 
     "labels": {
-      "argocd.argoproj.io/secret-type": "hydrator"
+      "argocd.argoproj.io/secret-type": "write-repository"
     }
   }, 
   "data": {
@@ -53,7 +53,7 @@ kubectl get secret my-auth -ojson | jq '.data | {
     "githubAppInstallationID": .installationID, 
     "githubAppPrivateKey": .privateKey, 
     "type": ("git" | @base64), 
-    "url": ("https://github.com/crenshaw-dev" | @base64)
+    "url": ("https://github.com/crenshaw-dev/argocd-example-apps" | @base64)
   }
 }' | kubectl apply -n argocd -f -
 ```
